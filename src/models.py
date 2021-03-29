@@ -1,9 +1,12 @@
+from src.business import COURIER_TYPES
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ENUM, ARRAY
 
+
 db = SQLAlchemy()
 
-courier_type_enum = ENUM(*('foot', 'bike', 'car'), name='courier_type')
+courier_type_enum = ENUM(*COURIER_TYPES, name='courier_type')
 
 
 def time_intervals_to_minutes_array(time_intervals):
@@ -25,6 +28,10 @@ def minutes_array_to_time_intervals(minutes_array):
     return time_intervals
 
 
+def datetime_to_rfc_3339(datetime):
+    return datetime
+
+
 class Courier(db.Model):
     __tablename__ = 'couriers'
 
@@ -32,6 +39,7 @@ class Courier(db.Model):
     courier_type = db.Column(courier_type_enum)
     regions = db.Column(ARRAY(db.Integer))
     working_hours = db.Column(ARRAY(db.Integer))
+    assigned_orders = db.relationship('Order', backref='courier', lazy='dynamic')
 
     def __init__(self, courier_id, courier_type, regions, working_hours):
         self.courier_id = courier_id
@@ -58,9 +66,11 @@ class Order(db.Model):
     weight = db.Column(db.Float)
     region = db.Column(db.Integer)
     delivery_hours = db.Column(ARRAY(db.Integer))
-    # assigned_time
-    # earning_coefficient
-    # delivery_time (in seconds)
+
+    courier_id = db.Column(db.Integer, db.ForeignKey('couriers.courier_id'))
+    courier_type = db.Column(courier_type_enum)
+    assigned_time = db.Column(db.DateTime(timezone=True))
+    delivery_time = db.Column(db.Integer)
 
     def __init__(self, order_id, weight, region, delivery_hours):
         self.order_id = order_id
@@ -70,6 +80,18 @@ class Order(db.Model):
 
     def __repr__(self):
         return '<id {}>'.format(self.order_id)
+
+    def get_full_info(self):
+        return {
+            'order_id': self.order_id,
+            'weight': self.weight,
+            'region': self.region,
+            'delivery_hours': minutes_array_to_time_intervals(self.delivery_hours),
+            'courier_id': self.courier_id,
+            'courier_type': self.courier_type,
+            'assigned_time': datetime_to_rfc_3339(self.assigned_time),
+            'delivery_time': self.delivery_time
+        }
 
     def serialize(self):
         return {

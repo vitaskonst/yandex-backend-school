@@ -1,10 +1,15 @@
-max_weight = {
+COURIER_TYPES = ['foot', 'bike', 'car']
+
+MIN_WEIGHT = 0.01
+MAX_WEIGHT = 50
+
+MAX_LOAD_CAPACITY = {
     'foot': 10,
     'bike': 15,
     'car': 50
 }
 
-earnings_coefficient = {
+EARNINGS_COEFFICIENTS = {
     'foot': 2,
     'bike': 5,
     'car': 9

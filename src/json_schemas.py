@@ -1,6 +1,13 @@
+from src.business import COURIER_TYPES, MIN_WEIGHT, MAX_WEIGHT
+
 HH_MM_REGEX = '([0-1][0-9]|2[0-3]):[0-5][0-9]'
 TIME_INTERVAL_REGEX = f'^{HH_MM_REGEX}-{HH_MM_REGEX}$'
-COURIER_TYPES = ['foot', 'bike', 'car']
+
+
+positive_integer = {
+    'type': 'integer',
+    'exclusiveMinimum': 0
+}
 
 post_schema = {
     'type': 'object',
@@ -14,20 +21,14 @@ post_schema = {
 courier_post_schema = {
     'type': 'object',
     'properties': {
-        'courier_id': {
-            'type': 'integer',
-            'exclusiveMinimum': 0,
-        },
+        'courier_id': positive_integer,
         'courier_type': {
             'type': 'string',
             'enum': COURIER_TYPES
         },
         'regions': {
             'type': 'array',
-            'items': {
-                'type': 'integer',
-                'exclusiveMinimum': 0,
-            }
+            'items': positive_integer
         },
         'working_hours': {
             'type': 'array',
@@ -50,10 +51,7 @@ courier_patch_schema = {
         },
         'regions': {
             'type': 'array',
-            'items': {
-                'type': 'integer',
-                'exclusiveMinimum': 0,
-            }
+            'items': positive_integer
         },
         'working_hours': {
             'type': 'array',
@@ -69,20 +67,14 @@ courier_patch_schema = {
 order_post_schema = {
     'type': 'object',
     'properties': {
-        'order_id': {
-            'type': 'integer',
-            'exclusiveMinimum': 0,
-        },
+        'order_id': positive_integer,
         'weight': {
             'type': 'number',
             'multipleOf': 0.01,
-            'minimum': 0.01,
-            'maximum': 50
+            'minimum': MIN_WEIGHT,
+            'maximum': MAX_WEIGHT
         },
-        'region': {
-            'type': 'integer',
-            'exclusiveMinimum': 0,
-        },
+        'region': positive_integer,
         'delivery_hours': {
             'type': 'array',
             'items': {

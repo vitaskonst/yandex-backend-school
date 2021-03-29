@@ -47,6 +47,14 @@ def patch_courier(courier_id, patch_info):
         db.session.commit()
 
 
+def update_assigned_orders(courier_id):
+    # TODO:
+    #   for all non-delivered orders assigned to this courier
+    #       if doesn't fit anymore
+    #           reset to NULL assigned_time, courier_id, price_coefficient
+    pass
+
+
 def add_order(order):
     already_exists = True if Order.query.filter_by(order_id=order['order_id']).first() else False
 
@@ -113,11 +121,7 @@ class CouriersPatch(Resource):
             abort(HTTPStatus.BAD_REQUEST)
 
         patch_courier(courier_id, patch_info=request.json)
-
-        # TODO:
-        #   for all non-delivered orders assigned to this courier
-        #       if doesn't fit anymore
-        #           reset to NULL assigned_time, courier_id, price_coefficient
+        update_assigned_orders(courier_id)
 
         return get_courier(courier_id), HTTPStatus.OK
 
