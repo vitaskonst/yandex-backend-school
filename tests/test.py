@@ -213,6 +213,8 @@ class Tester:
 
     def test_order_assign(self):
         url = DOMAIN + '/orders/assign'
+        response = requests.post(url, json={'courier_id': 1})
+        assert response.status_code == HTTPStatus.OK
 
     def make_test(self, tester):
         test_name = ' '.join(tester.__name__.split('_')[1:]).capitalize()
@@ -222,8 +224,10 @@ class Tester:
             print('success')
             self.test_results.append(True)
         except AssertionError:
-            print('fail\n')
+            print('fail')
+            print()
             traceback.print_exc()
+            print()
             self.test_results.append(False)
         except requests.exceptions.ConnectionError:
             print('fail')
