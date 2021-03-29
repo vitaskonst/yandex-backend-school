@@ -28,3 +28,7 @@ def calculate_rating(delivered_orders):
 
     return (60 * 60 - min(t, 60 * 60)) / (60 * 60) * 5
 
+
+def calculate_earnings(delivered_orders):
+    return sum([500 * EARNINGS_COEFFICIENTS[order['assigned_courier_type']] for order in delivered_orders])
+

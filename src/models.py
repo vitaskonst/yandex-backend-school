@@ -1,4 +1,4 @@
-from src.business import COURIER_TYPES
+from src.business_data import COURIER_TYPES
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ENUM, ARRAY
@@ -48,7 +48,7 @@ class Courier(db.Model):
         self.working_hours = working_hours
 
     def __repr__(self):
-        return '<id {}>'.format(self.courier_id)
+        return '<Courier id {}>'.format(self.courier_id)
 
     def serialize(self):
         return {
@@ -67,9 +67,9 @@ class Order(db.Model):
     region = db.Column(db.Integer)
     delivery_hours = db.Column(ARRAY(db.Integer))
 
-    courier_id = db.Column(db.Integer, db.ForeignKey('couriers.courier_id'))
-    courier_type = db.Column(courier_type_enum)
-    assigned_time = db.Column(db.DateTime(timezone=True))
+    assigned_courier_id = db.Column(db.Integer, db.ForeignKey('couriers.courier_id'))
+    assigned_courier_type = db.Column(courier_type_enum)
+    assigned_time = db.Column(db.String(30))
     delivery_time = db.Column(db.Integer)
 
     def __init__(self, order_id, weight, region, delivery_hours):
@@ -79,7 +79,7 @@ class Order(db.Model):
         self.delivery_hours = delivery_hours
 
     def __repr__(self):
-        return '<id {}>'.format(self.order_id)
+        return '<Order id {}>'.format(self.order_id)
 
     def get_full_info(self):
         return {
@@ -87,8 +87,8 @@ class Order(db.Model):
             'weight': self.weight,
             'region': self.region,
             'delivery_hours': minutes_array_to_time_intervals(self.delivery_hours),
-            'courier_id': self.courier_id,
-            'courier_type': self.courier_type,
+            'assigned_courier_id': self.assigned_courier_id,
+            'assigned_courier_type': self.assigned_courier_type,
             'assigned_time': datetime_to_rfc_3339(self.assigned_time),
             'delivery_time': self.delivery_time
         }

@@ -1,7 +1,11 @@
-from src.business import COURIER_TYPES, MIN_WEIGHT, MAX_WEIGHT
+from src.business_data import COURIER_TYPES, MIN_WEIGHT, MAX_WEIGHT
 
 HH_MM_REGEX = '([0-1][0-9]|2[0-3]):[0-5][0-9]'
 TIME_INTERVAL_REGEX = f'^{HH_MM_REGEX}-{HH_MM_REGEX}$'
+
+HH_MM_SS_REGEX = f'{HH_MM_REGEX}:[0-5][0-9]'
+YYYY_MM_DD_REGEX = '[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])'
+TIMESTAMP_REGEX = f'^{YYYY_MM_DD_REGEX}T{HH_MM_SS_REGEX}.[0-9]{{2,6}}Z$'
 
 
 positive_integer = {
@@ -84,5 +88,19 @@ order_post_schema = {
         }
     },
     'required': ['order_id', 'weight', 'region', 'delivery_hours'],
+    'additionalProperties': False
+}
+
+order_complete_schema = {
+    'type': 'object',
+    'properties': {
+        'courier_id': positive_integer,
+        'order_id': positive_integer,
+        'complete_time': {
+            'type': 'string',
+            'pattern': TIMESTAMP_REGEX
+        }
+    },
+    'required': ['courier_id', 'order_id', 'complete_time'],
     'additionalProperties': False
 }

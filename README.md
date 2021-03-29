@@ -9,12 +9,12 @@ You will need to go through the following steps to install this application:
 3. Create a python virtual environment (optional, but recommended).
 4. Install python dependencies.
 
-### 1. PostgreSQL installation
+### 1. PostgreSQL installation.
 Install PostgreSQL on Ubuntu:
 ```
 sudo apt-get install postgresql postgresql-contrib
 ```
-### 2. Database creation
+### 2. Database creation.
 Create user:
 ```
 sudo -u postgres createuser YOUR_USERNAME
@@ -36,7 +36,7 @@ psql -U YOUR_USERNAME -d DATABASE_NAME
 ```
 You may run `\conninfo` to check the postgres port number (default is 5432)
 
-### 3. Virtual environment creation
+### 3. Virtual environment creation.
 Install python virtualenv package:
 ```
 pip install virtualenv
@@ -49,7 +49,7 @@ Activate virtual environment by running
 ```
 source env/bin/activate
 ```
-### 4. Installing python dependencies
+### 4. Installing python dependencies.
 Having _requirements.txt_ in current working directory, run
 ```
 pip install -r requirements.txt
@@ -89,4 +89,15 @@ Now we need to initialize the database and make migrations by running the follow
 python manage.py db init
 python manage.py db migrate
 python manage.py db upgrade
+```
+### Running the server.
+The last command we need to enter is shown below:
+```
+flask run
+```
+
+## Testing
+In order to run tests, run the following command with activated virtual environment: 
+```
+python tests/test.py
 ```
